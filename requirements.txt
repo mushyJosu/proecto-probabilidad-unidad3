@@ -1,0 +1,2 @@
+Corre el comando pip install streamlit pandas numpy scipy matplotlib seaborn google-generativeai y
+ luego pip freeze > requirements.txt.
