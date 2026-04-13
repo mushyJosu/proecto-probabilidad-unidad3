@@ -64,3 +64,44 @@ with col2:
     
     ax_box.set_title(f"Boxplot de {variable}")
     st.pyplot(fig_box)
+
+# --- MÓDULO 3: ESTADÍSTICAS DESCRIPTIVAS Y PRUEBAS ---
+st.write("---")
+st.header("📊 Análisis Estadístico Detallado")
+
+# Cálculo de métricas clave usando SciPy y Pandas
+sesgo = datos_analizar.skew()
+curtosis = datos_analizar.kurtosis()
+
+# Prueba de Normalidad de Shapiro-Wilk
+# estadistico: qué tan cerca está de la normal / p_valor: probabilidad de error
+estadistico, p_valor = stats.shapiro(datos_analizar)
+
+col_met1, col_met2, col_met3 = st.columns(3)
+
+with col_met1:
+    st.metric("Sesgo (Skewness)", f"{sesgo:.2f}")
+    st.caption("0 = Simétrico. (+) = Derecha, (-) = Izquierda")
+
+with col_met2:
+    st.metric("Curtosis", f"{curtosis:.2f}")
+    st.caption(">0 = Puntiaguda, <0 = Plana")
+
+with col_met3:
+    # Interpretación automática de la normalidad (Alpha = 0.05)
+    es_normal = "Sí ✅" if p_valor > 0.05 else "No ❌"
+    st.metric("¿Es Normal?", es_normal)
+    st.caption(f"P-Valor: {p_valor:.4f}")
+
+# Detección de Outliers (Valores Atípicos) usando el Rango Intercuartílico (IQR)
+Q1 = datos_analizar.quantile(0.25)
+Q3 = datos_analizar.quantile(0.75)
+IQR = Q3 - Q1
+limite_inferior = Q1 - 1.5 * IQR
+limite_superior = Q3 + 1.5 * IQR
+
+outliers = datos_analizar[(datos_analizar < limite_inferior) | (datos_analizar > limite_superior)]
+
+st.write(f"**Detección de Outliers:** Se han encontrado **{len(outliers)}** valores atípicos.")
+if len(outliers) > 0:
+    st.write(outliers) # Muestra la lista de los valores locos si existen
