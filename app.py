@@ -37,3 +37,30 @@ if df is not None: # Si ya hay datos (por CSV o por generación)...
     
     # Extrae la columna elegida y borra celdas vacías para no romper los cálculos.
     datos_analizar = df[variable].dropna()
+
+    # --- MÓDULO 2: VISUALIZACIÓN DE DISTRIBUCIONES ---
+st.write("---") # Crea una línea divisoria visual en la app.
+st.header("📈 Análisis Visual de la Distribución")
+
+# Creamos dos columnas para que los gráficos aparezcan uno al lado del otro
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("Histograma y KDE")
+    fig_hist, ax_hist = plt.subplots() # Crea la figura base de Matplotlib.
+    
+    # sns.histplot dibuja las barras y la curva de densidad (kde=True)
+    sns.histplot(datos_analizar, kde=True, ax=ax_hist, color="skyblue")
+    
+    ax_hist.set_title(f"Distribución de {variable}")
+    st.pyplot(fig_hist) # Renderiza la gráfica en la interfaz de Streamlit.
+
+with col2:
+    st.subheader("Boxplot (Diagrama de Caja)")
+    fig_box, ax_box = plt.subplots()
+    
+    # El boxplot muestra la mediana, los cuartiles y puntos fuera de los bigotes (outliers)
+    sns.boxplot(x=datos_analizar, ax=ax_box, color="lightgreen")
+    
+    ax_box.set_title(f"Boxplot de {variable}")
+    st.pyplot(fig_box)
