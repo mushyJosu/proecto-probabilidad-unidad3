@@ -105,3 +105,45 @@ outliers = datos_analizar[(datos_analizar < limite_inferior) | (datos_analizar >
 st.write(f"**Detección de Outliers:** Se han encontrado **{len(outliers)}** valores atípicos.")
 if len(outliers) > 0:
     st.write(outliers) # Muestra la lista de los valores locos si existen
+
+# --- MÓDULO 4: CÁLCULO DE PROBABILIDADES (DISTRIBUCIÓN NORMAL) ---
+st.write("---")
+st.header("🎲 Calculadora de Probabilidades")
+st.write("Calcula la probabilidad acumulada $P(X \leq x)$ basándose en la media y desviación de tus datos.")
+
+# Usamos la media y desviación real de tus datos actuales
+mu_calc = datos_analizar.mean()
+sigma_calc = datos_analizar.std()
+
+# Entrada del usuario para el valor a evaluar
+x_value = st.number_input(f"Ingresa un valor para calcular P(X ≤ x):", 
+                          value=float(mu_calc), 
+                          step=0.1)
+
+# Cálculo de la Probabilidad usando la Función de Distribución Acumulada (CDF)
+probabilidad = stats.norm.cdf(x_value, mu_calc, sigma_calc)
+
+st.success(f"La probabilidad de que un valor sea menor o igual a **{x_value}** es del **{probabilidad*100:.2f}%**")
+
+# --- Gráfico de Probabilidad Sombreada (Tamaño Mediano) ---
+# Usamos figsize=(7, 4) para que sea más compacta y no tan alta
+fig_prob, ax_prob = plt.subplots(figsize=(7, 4)) 
+
+x_axis = np.linspace(mu_calc - 4*sigma_calc, mu_calc + 4*sigma_calc, 100)
+y_axis = stats.norm.pdf(x_axis, mu_calc, sigma_calc)
+
+ax_prob.plot(x_axis, y_axis, color='black', lw=2, label='Curva Normal')
+
+# Sombreado del área de probabilidad
+x_fill = np.linspace(mu_calc - 4*sigma_calc, x_value, 100)
+y_fill = stats.norm.pdf(x_fill, mu_calc, sigma_calc)
+ax_prob.fill_between(x_fill, y_fill, color='orange', alpha=0.5, label='Área de Probabilidad')
+
+ax_prob.set_title(f"Área bajo la curva para X ≤ {x_value}", fontsize=10)
+ax_prob.legend(fontsize=8)
+ax_prob.tick_params(labelsize=8) # Hace los números de los ejes más pequeños
+
+# Centrar la gráfica en Streamlit usando columnas
+col_graf1, col_graf2, col_graf3 = st.columns([1, 2, 1])
+with col_graf2:
+    st.pyplot(fig_prob)
