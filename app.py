@@ -108,22 +108,6 @@ if st.session_state.df is not None:
     else:
         st.success(f"No hay evidencia suficiente para rechazar H₀")
 
-    # BLOQUE DE DIAGNÓSTICO (Ponlo justo antes del Módulo 6 para probar)
-    import requests
-    
-    # Reemplaza esto con tu NUEVA clave (la que acabas de borrar ya no es segura)
-    mi_clave_prueba = "AIzaSyCHuh7xOxvhzBBQGH341gRV_kfeyINRj7E" 
-    
-    try:
-        # La URL correcta para LISTAR modelos es esta:
-        url_diagnostico = f"https://generativelanguage.googleapis.com/v1/models?key={mi_clave_prueba}"
-        respuesta_diag = requests.get(url_diagnostico).json()
-        
-        # Esto te mostrará en la app de Streamlit qué nombres acepta tu cuenta
-        st.write("### 🔍 Diagnóstico de Modelos Disponibles:")
-        st.json(respuesta_diag) 
-    except Exception as e:
-        st.error(f"Error en diagnóstico: {e}")
 
     # --- MÓDULO 6: INTERPRETACIÓN CON IA (VERSIÓN 2026) ---
     st.write("---")
