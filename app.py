@@ -7,16 +7,16 @@ from scipy import stats
 import requests
 import json
 
-# --- CONFIGURACIÓN DE PÁGINA Y ESTILOS ---
+
 st.set_page_config(page_title="Prueba de hipotesis ", layout="wide")
 
-# Inicializar estados de sesión
+
 if 'df' not in st.session_state:
     st.session_state.df = None
 if 'ia_response' not in st.session_state:
     st.session_state.ia_response = ""
 
-# Paleta de colores (mantengo la tuya)
+
 COLOR_HIST      = "#4C9BE8"
 COLOR_BOX       = "#56C596"
 COLOR_Z_OK      = "#27AE60"
@@ -48,7 +48,7 @@ else:
         data = np.random.normal(mu_s, sigma_s, n_s)
         st.session_state.df = pd.DataFrame(data, columns=["Variable_Generada"])
 
-# --- CUERPO PRINCIPAL ---
+
 if st.session_state.df is not None:
     df = st.session_state.df
     variable = st.selectbox("Selecciona la variable:", df.columns)
@@ -70,7 +70,7 @@ if st.session_state.df is not None:
         sns.boxplot(x=datos, ax=ax, color=COLOR_BOX)
         st.pyplot(fig)
 
-    # ====================== PRUEBA Z ======================
+
     st.write("---")
     st.header("🔬 Prueba de Hipótesis (Z-Test)")
 
@@ -86,7 +86,6 @@ if st.session_state.df is not None:
         s_muestral = datos.std(ddof=1)
         st.metric("Desv. Estándar Muestral (s)", f"{s_muestral:.4f}")
 
-    # ==================== SIGMA CONFIGURABLE ====================
     with col4:
         usar_sigma_conocida = st.checkbox("Usar σ poblacional conocida", value=True)
         if usar_sigma_conocida:
@@ -134,7 +133,7 @@ if st.session_state.df is not None:
     else:
         st.success(f"🟢 No hay evidencia suficiente para rechazar H₀")
 
-    # ====================== GRÁFICA (MANTENIDA COMO LA TENÍAS) ======================
+   
     st.subheader("📉 Distribución Normal Estándar - Regiones de Rechazo")
 
     fig, ax = plt.subplots(figsize=(10, 4))   # ← Tamaño y estilo como lo tenías antes
@@ -144,12 +143,11 @@ if st.session_state.df is not None:
     y = stats.norm.pdf(x)
     ax.plot(x, y, color='#000000', linewidth=2.8, label='Distribución Normal Estándar (Z)')
 
-    # Sombrear región de rechazo
     if tipo_cola == "Bilateral":
         ax.fill_between(x, y, where=(x <= -z_crit) | (x >= z_crit), 
                        color='red', alpha=0.35, label='Región de rechazo (α)')
 
-        # Líneas críticas en NEGRO
+        # Líneas críticas
         ax.axvline(-z_crit, color='black', linestyle='--', linewidth=2.0)
         ax.axvline(z_crit, color='black', linestyle='--', linewidth=2.0)
 
@@ -162,7 +160,7 @@ if st.session_state.df is not None:
         ax.axvline(z_crit, color='black', linestyle='--', linewidth=2.0)
         ax.text(z_crit - 0.15, 0.08, f'{z_crit:.2f}', color='red', fontsize=11, fontweight='bold')
 
-    # Línea de Z calculado (verde)
+    # Línea de Z calculado 
     ax.axvline(z_calc, color=COLOR_Z_OK, linestyle='-', linewidth=3.2, 
                label=f'Z calculado = {z_calc:.3f}')
 
@@ -181,7 +179,7 @@ if st.session_state.df is not None:
     st.pyplot(fig)
     st.caption("• Zona roja = Región de rechazo | • Línea verde = Z calculado | • Línea negra = Media según H₀")
 
-    # --- INTERPRETACIÓN CON IA ---
+    # INTERPRETACIÓN CON IA
     st.write("---")
     st.header("🤖 Interpretación con Inteligencia Artificial")
     
